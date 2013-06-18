@@ -7,8 +7,8 @@ A JavaScript implementation of [HyperLogLog](http://algo.inria.fr/flajolet/Publi
 Latest Version
 ---------------
 
-*  [v1.0.0](https://github.com/aggregateknowledge/js-hll/blob/master/js-hll-1.0.0.js)
-*  [v1.0.0 (minified)](https://github.com/aggregateknowledge/js-hll/blob/master/js-hll-1.0.0.min.js)
+*  [v1.0.0](js-hll-1.0.0.js)
+*  [v1.0.0 (minified)](js-hll-1.0.0.min.js)
 
 
 Overview
@@ -71,7 +71,7 @@ For more information on HLL intersections, see [this blog post](http://blog.aggr
 Usage
 -----
 
-Refer to the unit tests (`hll-test.js`) or [`Usage.markdown`](Usage.markdown) for many more usage examples.
+Refer to the unit tests (`hll-test.js`) or [`USAGE.markdown`](USAGE.markdown) for many more usage examples.
 
 Hashing and adding a value to a new HLL:
 
@@ -117,14 +117,14 @@ hllUnion.union(hllSet2)/*modifies hllUnion to contain the union*/;
 console.log(hllUnion.cardinality());
 ```
 
-Reading an HLL from its [hex](https://github.com/aggregateknowledge/js-hll/blob/master/STORAGE.markdown) form (for example, retrieved from a [PostgreSQL](https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database)):
+Reading an HLL from its [hex](STORAGE.markdown) form (for example, retrieved from a [PostgreSQL](https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database)):
 
 ```javascript
 var hllSet = hll.fromHexString(hllHexString).hllSet;
 console.log(hllSet.cardinality());
 ```
 
-Writing an HLL to its [hex](https://github.com/aggregateknowledge/js-hll/blob/master/STORAGE.markdown) form (for example, to be inserted into a [PostgreSQL](https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database)):
+Writing an HLL to its [hex](STORAGE.markdown) form (for example, to be inserted into a [PostgreSQL](https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database)):
 
 
 ```javascript
@@ -162,7 +162,7 @@ Testing
 Notes
 -----
 
-*  This implementation will read all of the various `Storage.md` formats but only writes to the `FULL` format. Also, the in-RAM storage is always `FULL`.
+*  This implementation will read all of the various [`STORAGE.markdown`](STORAGE.markdown) formats but only writes to the `FULL` format. Also, the in-RAM storage is always `FULL`.
 *  For this initial implementation, readability has been chosen over in-RAM size. Specifically, the register values (regardless of the register width) are stored as an array of numbers (each of which are 64bits) rather than bit-packing them to achieve minimum storage. This will be rectified in future versions.
 *  The register width is limited to at most 5 bits to allow for using JavaScript's native bit operations (which support up to 32bits). If you have the need to support 6 bits of precision please let us know (file an issue)!
 
