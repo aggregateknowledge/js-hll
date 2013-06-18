@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+ - Copyright 2013 Aggregate Knowledge, Inc.
+ -
+ - Licensed under the Apache License, Version 2.0 (the "License");
+ - you may not use this file except in compliance with the License.
+ - You may obtain a copy of the License at
+ -
+ -     http://www.apache.org/licenses/LICENSE-2.0
+ -
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS,
+ - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ - See the License for the specific language governing permissions and
+ - limitations under the License.
+ -->
+    <meta charset="utf-8">
+    <title>Stress Test</title>
+    <script src="js-hll-1.0.0.min.js"></script>
+    <script>
+        "use strict";
+
+        var LOG2M = 13/*a suffienctly large number of registers to be a meaningful test*/,
+            REGISTER_WIDTH = 5/*~2B unique numbers*/;
+
+        // *********************************************************************
+        // establish the amount of time it takes to generate random numbers
+        // @param  count the number of random numbers to be generated
+        // @return the time (in milliseconds) to generate a single random number
+        //         (on average)
+        function rngPerformance(count) {
+            var total = 0/*ensure that the JIT doesn't optimize away*/;
+
+            var startTime = performance.now();
+            var index = count;
+            while(index--) total += randomValue()[0/*UPPER -- arbitrary*/];
+            var endTime = performance.now();
+
+            console.log("Time to generate " + count + " numbers: " + (endTime - startTime) + " ms (" + total + ")");
+
+            return (endTime - startTime) / count;
+        }
+
+        // determine the performance of creating, inserting and finding the
+        // cardinality of HLLs
+        // @param  hllCount the number of HLLs to create and insert into
+        // @param  valueCount the number of values to insert into each HLL
+        // @param  timePerRNG the time in milliseconds to create a single random
+        //         number (used in reporting statistics)
+        function hllInsertCardinalityPerformance(hllCount, valueCount, timePerRNG) {
+            // create sets
+            var hlls = [];
+            var startTime = performance.now();
+            var hllIndex = hllCount;
+            while(hllIndex--) hlls.push(new hll.HLL(LOG2M, REGISTER_WIDTH));
+            var endTime = performance.now();
+            console.log("Time to create " + hllCount + " empty HLLs: " + (endTime - startTime) + " ms");
+
+            // insert values into HLLs
+            console.log("Inserting " + valueCount + " values into " + hllCount + " HLLs...");
+            startTime = performance.now();
+            hllIndex = hllCount;
+            while(hllIndex--) {
+                var hllSet = hlls[hllIndex];
+                var valueIndex = valueCount;
+                while(valueIndex--) hllSet.addRaw(randomValue(), hllSet);
+            }
+            endTime = performance.now();
+            console.log("Time to populate " + hllCount + " HLLs with " + valueCount + " values: " + (endTime - startTime) + " ms");
+            console.log("\tops per sec: " + opsPerSec(startTime, endTime, hllCount * valueCount));
+            console.log("Estimated insert time without RNG: " + ((endTime - startTime) - (timePerRNG * hllCount * valueCount)) + " ms");
+            console.log("\tops per sec: " + opsPerSec(startTime, (endTime - (timePerRNG * hllCount * valueCount)), hllCount * valueCount));
+
+            // determine HLL cardinalities
+            console.log("Computing cardinalities from " + hllCount + " HLLs...");
+            var estimatedCardinalities = [];
+            startTime = performance.now();
+            hllIndex = hllCount;
+            while(hllIndex--) estimatedCardinalities.push(hlls[hllIndex].cardinality());
+            endTime = performance.now();
+            console.log("Time to do " + hllCount + " cardinality estimations: " + (endTime - startTime) + " ms");
+            console.log("\tops per sec: " + opsPerSec(startTime, endTime, hllCount));
+// TODO:  some form of average % diff of estimated from actual
+//hllIndex = hllCount;
+//while(hllIndex--) console.log((estimatedCardinalities[hllIndex] - valueCount) / valueCount * 100);
+        }
+
+        // determine the performance of unioning (including an initial <code>clone()</code>)
+        // HLLs
+        // @param  hllCount the number of HLLs to create and insert into
+        function hllUnionPerformance(hllCount) {
+            // create sets
+            var hlls = [];
+            var startTime = performance.now();
+            var hllIndex = hllCount;
+            while(hllIndex--) hlls.push(new hll.HLL(LOG2M, REGISTER_WIDTH));
+            var endTime = performance.now();
+            console.log("Time to create " + hllCount + " empty HLLs: " + (endTime - startTime) + " ms");
+
+            // insert random values directly into the registers to simulate
+            // populated HLLs
+            hllIndex = hllCount;
+            while(hllIndex--) {
+                var hllSet = hlls[hllIndex];
+                var registerIndex = hllSet.m/*number of registers (2^log2m)*/,
+                    registers = hllSet.registers/*for performance*/,
+                    maxRegisterValue = ((1 << hllSet.registerWidth/*2^registerWidth*/) - 1) >>> 0;
+                while(registerIndex--) registers[registerIndex] = Math.floor(Math.random() * maxRegisterValue);
+            }
+
+            // perform unions (pair-wise)
+            console.log("Computing unions with " + (hllCount - 1/*since done in pairs*/) + " HLLs...");
+            startTime = performance.now();
+            var unionHll = null/*none to start*/;
+            hllIndex = hllCount;
+            while(hllIndex--) { 
+                if(unionHll != null) unionHll.union(hlls[hllIndex]);
+                unionHll = hlls[hllIndex].clone();
+            }
+            endTime = performance.now();
+            console.log("Time to do " + (hllCount - 1/*since down in pairs*/) + " unions: " + (endTime - startTime) + " ms");
+            console.log("\tops per sec: " + opsPerSec(startTime, endTime, (hllCount - 1/*since done in pairs*/)));
+        }
+
+        // ---------------------------------------------------------------------
+        function init() {
+            var timePerRNG = rngPerformance(1e7/*# RNGs to generate*/);
+
+            hllInsertCardinalityPerformance(2e2/*# of HLLs to generate*/, 
+                                            1e6/*# of values to add to each HLL*/, 
+                                            timePerRNG);
+            hllUnionPerformance(2e2/*# of HLLs to generate*/);
+        }
+
+        // =====================================================================
+        function opsPerSec(startTime, endTime, count) {
+            return 1000.0 * (count / (endTime - startTime));
+        }
+
+        // ---------------------------------------------------------------------
+        // generate a long (8 byte) random value to be inserted into a set
+        var MAX_INT = 1 << 31;
+        function randomValue() {
+            return [ Math.floor(Math.random() * MAX_INT), Math.floor(Math.random() * MAX_INT) ];
+        }
+    </script>
+</head>
+<body>
+
+</body>
+
+<script>
+    // entry point
+    init();
+</script>
+</html>
