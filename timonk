@@ -81,7 +81,7 @@ var rawKey = new ArrayBuffer(8);
 var byteView = new Int8Array(rawKey);
     byteView[0] = 0xDE; byteView[1] = 0xAD; byteView[2] = 0xBE; byteView[3] = 0xEF;
     byteView[4] = 0xFE; byteView[5] = 0xED; byteView[6] = 0xFA; byteView[7] = 0xCE;
-var hllSet = new hll.HLL(13/&#42;log2m&#42;/, 5/&#42;registerWidth&#42;/);
+var hllSet = new hll.HLL(13/*log2m*/, 5/*registerWidth*/);
     hllSet.addRaw(murmur3.hash128(rawKey, seed));
 ```
 
@@ -94,25 +94,25 @@ console.log(hllSet.cardinality());
 Unioning two HLLs together (and retrieving the resulting cardinality):
 
 ```javascript
-var hllSet1 = new hll.HLL(13/&#42;log2m&#42;/, 5/&#42;registerWidth&#42;/),
-    hllSet2 = new hll.HLL(13/&#42;log2m&#42;/, 5/&#42;registerWidth&#42;/);
+var hllSet1 = new hll.HLL(13/*log2m*/, 5/*registerWidth*/),
+    hllSet2 = new hll.HLL(13/*log2m*/, 5/*registerWidth*/);
 
 // ... (add values to both sets) ...
 
-hllSet1.union(hllSet2)/&#42;modifies hllSet1 to contain the union&#42;/;
+hllSet1.union(hllSet2)/*modifies hllSet1 to contain the union*/;
 console.log(hllSet1.cardinality());
 ```
 
 Cloning an HLL:
 
 ```javascript
-var hllSet1 = new hll.HLL(13/&#42;log2m&#42;/, 5/&#42;registerWidth&#42;/),
-    hllSet2 = new hll.HLL(13/&#42;log2m&#42;/, 5/&#42;registerWidth&#42;/);
+var hllSet1 = new hll.HLL(13/*log2m*/, 5/*registerWidth*/),
+    hllSet2 = new hll.HLL(13/*log2m*/, 5/*registerWidth*/);
 
 // ... (add values to both sets) ...
 
 var hllUnion = hllSet1.clone();
-hllUnion.union(hllSet2)/&#42;modifies hllUnion to contain the union&#42;/;
+hllUnion.union(hllSet2)/*modifies hllUnion to contain the union*/;
 // both 'hllSet1' and 'hllSet2' are unmodified
 console.log(hllUnion.cardinality());
 ```
