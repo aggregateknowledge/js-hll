@@ -136,7 +136,7 @@ var hllHexString = hllSet.toHexString();
 Projects using `js-hll`
 -----------------------
 
-*  [Venn Diagram](http://blog.aggregateknowledge.com/FIXME)
+*  [Venn Diagram](http://www.aggregateknowledge.com/science/blog/venn.html)
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
