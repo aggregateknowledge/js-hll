@@ -1,7 +1,7 @@
 js-hll
 ======
 
-A JavaScript implementation of [HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) whose goal is to be storage-compatible with other similar [offerings](https://github.com/aggregateknowledge/postgresql-hll) from [Aggregate Knowledge](http://blog.aggregateknowledge.com/). A demo of this library is available at [FIXME](http://blog.aggregateknowledge.com/).
+A JavaScript implementation of [HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) whose goal is to be storage-compatible with other similar [offerings](https://github.com/aggregateknowledge/postgresql-hll) from [Aggregate Knowledge](http://blog.aggregateknowledge.com/). A [demo](http://www.aggregateknowledge.com/science/blog/venn.html) of this library is available.
 
 
 Latest Version
