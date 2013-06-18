@@ -143,7 +143,7 @@ Projects using `js-hll`
 Building
 --------
 
-*  Requires [Maven 2.0](FIXME)
+*  Requires [Maven 2.0](http://maven.apache.org/)
 *  `mvn clean package` in the base directory
 
    A `target` directory will be created (which is the combination of `src/main` and `src/test/`).
