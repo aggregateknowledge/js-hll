@@ -117,14 +117,14 @@ hllUnion.union(hllSet2)/*modifies hllUnion to contain the union*/;
 console.log(hllUnion.cardinality());
 ```
 
-Reading an HLL from its [hex](STORAGE.markdown) form (for example, retrieved from a [PostgreSQL](https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database)):
+Reading an HLL from its [hex](STORAGE.markdown) form (for example, retrieved from a [PostgreSQL database](https://github.com/aggregateknowledge/postgresql-hll)):
 
 ```javascript
 var hllSet = hll.fromHexString(hllHexString).hllSet;
 console.log(hllSet.cardinality());
 ```
 
-Writing an HLL to its [hex](STORAGE.markdown) form (for example, to be inserted into a [PostgreSQL](https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database)):
+Writing an HLL to its [hex](STORAGE.markdown) form (for example, to be inserted into a [PostgreSQL database](https://github.com/aggregateknowledge/postgresql-hll)):
 
 
 ```javascript
