@@ -16,7 +16,7 @@
 
 /**
  * @fileoverview A JavaScript implementation of {@link http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf HyperLogLog}
- * whose goal is to be compatible with other similar {@link https://github.com/aggregateknowledge/postgresql-hll offerings}
+ * whose goal is to be {@link https://github.com/aggregateknowledge/hll-storage-spec storage-compatible} with other similar offerings
  * from {@link http://blog.aggregateknowledge.com/ Aggregate Knowledge}.<p/>
  * 
  * Hashing of raw values may be simplified using AK's {@link https://github.com/aggregateknowledge/js-murmur3-128 JavaScript Murmur3 128bit}
@@ -158,21 +158,22 @@
  *     // both 'hllSet1' and 'hllSet2' are unmodified
  *     console.log(hllUnion.cardinality());
  * </pre>
- * 
- * Reading an HLL from its {@link https://github.com/aggregateknowledge/postgresql-hll/blob/master/STORAGE.markdown hex} 
- * form (for example, retrieved from a {@link https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database}):
+ *
+ * Reading an HLL from its hex form (for example, retrieved from a PostgreSQL database):
  * <pre>
  *     var hllSet = hll.fromHexString(hllHexString).hllSet;
  *     console.log(hllSet.cardinality());
  * </pre>
  *
- * Writing an HLL to its {@link https://github.com/aggregateknowledge/postgresql-hll/blob/master/STORAGE.markdown hex} 
- * form (for example, to be inserted into a {@link https://github.com/aggregateknowledge/postgresql-hll PostgreSQL database}):
+ * Writing an HLL to its hex form (for example, to be inserted into a PostgreSQL database):
  * <pre>
  *     ...
  *     var hllHexString = hllSet.toHexString();
  *     ...
  * </pre>
+ *
+ * For more information on the hex format and other storage-compatible implementations,
+ * see {@link https://github.com/aggregateknowledge/hll-storage-spec here}.
  */
 
 if(hll === undefined)

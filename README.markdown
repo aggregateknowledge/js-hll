@@ -1,7 +1,9 @@
 js-hll
 ======
 
-A JavaScript implementation of [HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) whose goal is to be storage-compatible with other similar [offerings](https://github.com/aggregateknowledge/postgresql-hll) from [Aggregate Knowledge](http://blog.aggregateknowledge.com/). A [demo](http://www.aggregateknowledge.com/science/blog/venn.html) of this library is available.
+A JavaScript implementation of [HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) whose goal is to be [storage-compatible](https://github.com/aggregateknowledge/hll-storage-spec) with other similar offerings from [Aggregate Knowledge](http://blog.aggregateknowledge.com/). A [demo](http://www.aggregateknowledge.com/science/blog/venn.html) of this library is available.
+
+**NOTE:** This implementation fully implements reading all formats in the [v1.0.0 storage specification](https://github.com/aggregateknowledge/hll-storage-spec/blob/v1.0.0/STORAGE.md), but only writes to the `FULL` format. Also, the in-RAM storage is always `FULL`.
 
 
 Latest Version
@@ -117,14 +119,14 @@ hllUnion.union(hllSet2)/*modifies hllUnion to contain the union*/;
 console.log(hllUnion.cardinality());
 ```
 
-Reading an HLL from its [hex](STORAGE.markdown) form (for example, retrieved from a [PostgreSQL database](https://github.com/aggregateknowledge/postgresql-hll)):
+Reading an HLL from a hex representation of [storage specification, v1.0.0](https://github.com/aggregateknowledge/hll-storage-spec/blob/v1.0.0/STORAGE.md) (for example, retrieved from a [PostgreSQL database](https://github.com/aggregateknowledge/postgresql-hll)):
 
 ```javascript
 var hllSet = hll.fromHexString(hllHexString).hllSet;
 console.log(hllSet.cardinality());
 ```
 
-Writing an HLL to its [hex](STORAGE.markdown) form (for example, to be inserted into a [PostgreSQL database](https://github.com/aggregateknowledge/postgresql-hll)):
+Writing an HLL to its hex representation of [storage specification, v1.0.0](https://github.com/aggregateknowledge/hll-storage-spec/blob/v1.0.0/STORAGE.md) (for example, to be inserted into a [PostgreSQL database](https://github.com/aggregateknowledge/postgresql-hll)):
 
 
 ```javascript
@@ -162,7 +164,6 @@ Testing
 Notes
 -----
 
-*  This implementation will read all of the various [`STORAGE.markdown`](STORAGE.markdown) formats but only writes to the `FULL` format. Also, the in-RAM storage is always `FULL`.
 *  For this initial implementation, readability has been chosen over in-RAM size. Specifically, the register values (regardless of the register width) are stored as an array of numbers (each of which are 64bits) rather than bit-packing them to achieve minimum storage. This will be rectified in future versions.
 *  The register width is limited to at most 5 bits to allow for using JavaScript's native bit operations (which support up to 32bits). If you have the need to support 6 bits of precision please let us know (file an issue)!
 
