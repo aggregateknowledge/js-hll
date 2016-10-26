@@ -1,0 +1,7 @@
+{
+  "name": "js-hll",
+  "version": "1.0.0",
+  "author": "aggregateknowledge",
+  "description": "A JavaScript implementation of HyperLogLog whose goal is to be storage-compatible with other similar offerings from Aggregate Knowledge.",
+  "main": "js-hll-1.0.0.js"
+}
