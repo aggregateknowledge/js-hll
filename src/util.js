@@ -27,7 +27,7 @@
  * </ul>
  */
 
-if(hll === undefined)
+if(typeof hll === "undefined")
     var hll = { version: "1.0.0" };
 if(hll.util === undefined)
     hll.util = { version: "1.0.0" };
