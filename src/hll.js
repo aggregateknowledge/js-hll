@@ -176,7 +176,7 @@
  * see {@link https://github.com/aggregateknowledge/hll-storage-spec here}.
  */
 
-if(hll === undefined)
+if(typeof hll === "undefined")
     var hll = { version: "1.0.0" };
 (function () {
     // ** Config ***************************************************************
